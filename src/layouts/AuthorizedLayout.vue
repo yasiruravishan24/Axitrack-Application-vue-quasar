@@ -1,8 +1,15 @@
 <script setup>
 import { ref } from "vue";
 import { useQuasar } from "quasar";
+import { useRouter } from "vue-router";
+
+import { useUserStore } from "../stores/useUserStore";
 
 const $q = useQuasar();
+
+const user = useUserStore();
+
+const router = useRouter();
 
 $q.loadingBar.setDefaults({
   color: "dark",
@@ -25,7 +32,27 @@ const links = ref([
   { icon: "feedback", text: "Send feedback" },
 ]);
 
-const AccountLinks = ref([{ icon: "logout", text: "Logout" }]);
+const AccountLinks = ref([]);
+
+const logout = async () => {
+  $q.loadingBar.start();
+
+  await user
+    .logout()
+    .then(() => {
+      $q.loadingBar.stop();
+      router.push({ name: "login" });
+    })
+    .catch((error) => {
+      $q.loadingBar.stop();
+
+      $q.notify({
+        message: error.message,
+        color: "negative",
+        position: "top",
+      });
+    });
+};
 </script>
 
 <template>
@@ -53,13 +80,11 @@ const AccountLinks = ref([{ icon: "logout", text: "Logout" }]);
         <div class="q-gutter-sm row items-center no-wrap">
           <q-btn round dense flat color="grey-8" icon="notifications">
             <q-badge color="red" text-color="white" floating> 2 </q-badge>
-            <q-tooltip>Notifications</q-tooltip>
           </q-btn>
           <q-btn round flat>
             <q-avatar size="26px">
               <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
             </q-avatar>
-            <q-tooltip>Account</q-tooltip>
             <q-menu>
               <q-list style="min-width: 100px">
                 <q-item
@@ -72,6 +97,13 @@ const AccountLinks = ref([{ icon: "logout", text: "Logout" }]);
                     <q-icon color="grey" :name="link.icon" />
                   </q-item-section>
                   <q-item-section>{{ link.text }}</q-item-section>
+                </q-item>
+
+                <q-item clickable v-close-popup @click="logout">
+                  <q-item-section avatar>
+                    <q-icon color="grey" name="logout" />
+                  </q-item-section>
+                  <q-item-section>Logout</q-item-section>
                 </q-item>
               </q-list>
             </q-menu>
