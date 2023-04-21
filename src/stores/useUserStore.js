@@ -33,19 +33,6 @@ export const useUserStore = defineStore({
 
         this.user = (await getDoc(doc(db, "users", user.uid))).data();
 
-        this.user['uid'] = user.uid;
-
-        await auth.currentUser.getIdToken(true).then((token) => {
-          this.user['token'] = token
-        });
-
-        const encryptedData = util.crypto.encryptData(process.env.APP_SECRET_KEY, JSON.stringify({
-          uid: user.uid,
-          token: this.user['token']
-        }))
-
-        localStorage.setItem('axitrack', encryptedData)
-
       }).catch((error) => {
         throw error
       });
