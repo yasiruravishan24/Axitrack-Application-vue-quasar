@@ -51,7 +51,11 @@ const inputs = ref([
     type: "password",
     autocomplete: "on",
     value: "",
-    rules: [(val) => (val && val.length > 0) || "Please enter password"],
+    rules: [
+      (val) => (val && val.length > 0) || "Please enter password",
+      (val) =>
+        (val && val.length >= 6) || "Password should be at least 6 characters",
+    ],
     loading: false,
     autofocus: false,
     lazyRules: false,
@@ -73,7 +77,7 @@ const validateEmail = (val) => {
   return new Promise((resolve) => {
     setTimeout(() => {
       user.emailCheck(val).then((e) => {
-        resolve(e ? undefined : "No account found with that email");
+        resolve(e ? undefined : "No account found with this email");
       });
 
       inputs.value[0].loading = false;
@@ -111,7 +115,36 @@ const submitForm = async () => {
     return;
   }
 
-  console.log(username, password);
+  btn_loading.value = true;
+  $q.loadingBar.start();
+
+  await user
+    .login(username, password)
+    .then((res) => {
+      btn_loading.value = false;
+      $q.loadingBar.stop();
+      router.push({ name: "home" });
+    })
+    .catch((error) => {
+      btn_loading.value = false;
+      $q.loadingBar.stop();
+
+      if (error.code == "auth/wrong-password") {
+        $q.notify({
+          message: "Password invalid.Please try again",
+          color: "warning",
+          position: "top",
+        });
+
+        return;
+      }
+
+      $q.notify({
+        message: error.message,
+        color: "negative",
+        position: "top",
+      });
+    });
 };
 </script>
 

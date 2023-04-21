@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { auth, db } from "../configs/firebase/index"
-import { fetchSignInMethodsForEmail, createUserWithEmailAndPassword } from "firebase/auth"
-import { doc, setDoc } from "firebase/firestore";
+import { fetchSignInMethodsForEmail, createUserWithEmailAndPassword, signInWithEmailAndPassword } from "firebase/auth"
+import { doc, setDoc, getDoc } from "firebase/firestore";
 
 export const useUserStore = defineStore({
   id: 'user',
@@ -14,7 +14,6 @@ export const useUserStore = defineStore({
   actions: {
     async register(data) {
 
-
       return await createUserWithEmailAndPassword(auth, data['email'], data['password']).then(async (res) => {
         const { user } = res
 
@@ -26,8 +25,15 @@ export const useUserStore = defineStore({
         throw error
       });
     },
-    async login() {
+    async login(email, password) {
+      return await signInWithEmailAndPassword(auth, email, password).then(async (res) => {
+        const { user } = res
 
+        this.user = (await getDoc(doc(db, "users", user.uid))).data();
+
+      }).catch((error) => {
+        throw error
+      });
     },
     async emailCheck(email) {
 
