@@ -208,10 +208,20 @@ const submitForm = async () => {
       btn_loading.value = false;
       $q.loadingBar.stop();
 
+      if (error.code == "auth/email-already-in-use") {
+        $q.notify({
+          message: "Email already exists",
+          color: "warning",
+          position: "top",
+        });
+
+        return;
+      }
+
       $q.notify({
         message: error.message,
         color: "negative",
-        position: "top-right",
+        position: "top",
       });
     });
 };
