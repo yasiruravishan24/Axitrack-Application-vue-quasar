@@ -3,10 +3,12 @@ import { auth, db } from "../configs/firebase/index"
 import { fetchSignInMethodsForEmail, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut } from "firebase/auth"
 import { doc, setDoc, getDoc } from "firebase/firestore";
 
+import util from '../utils/index';
+
 export const useUserStore = defineStore({
   id: 'user',
   state: () => ({
-    user: null,
+    user: {},
   }),
   getters: {
     getUser: (state) => state.user,
@@ -30,6 +32,19 @@ export const useUserStore = defineStore({
         const { user } = res
 
         this.user = (await getDoc(doc(db, "users", user.uid))).data();
+
+        this.user['uid'] = user.uid;
+
+        await auth.currentUser.getIdToken(true).then((token) => {
+          this.user['token'] = token
+        });
+
+        const encryptedData = util.crypto.encryptData(process.env.APP_SECRET_KEY, JSON.stringify({
+          uid: user.uid,
+          token: this.user['token']
+        }))
+
+        localStorage.setItem('axitrack', encryptedData)
 
       }).catch((error) => {
         throw error
