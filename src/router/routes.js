@@ -9,8 +9,8 @@ const routes = [
     children: [
       {
         path: '',
-        name: 'index',
-        component: () => import('src/pages/auth/IndexPage.vue')
+        name: 'home',
+        component: () => import('src/pages/auth/HomePage.vue')
       }
     ]
   },
