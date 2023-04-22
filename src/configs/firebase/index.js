@@ -1,7 +1,7 @@
 
 
 import { initializeApp } from "firebase/app"
-import { getAuth } from "firebase/auth"
+import { getAuth, onAuthStateChanged } from "firebase/auth"
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
 
@@ -26,11 +26,22 @@ const db = getFirestore(app)
 
 const storage = getStorage(app)
 
+
+const getCurrentUser = () => {
+  return new Promise((resolve, reject) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      unsubscribe()
+      resolve(user)
+    }, reject)
+  })
+}
+
 export {
   app,
   auth,
   db,
   storage,
+  getCurrentUser
 }
 
 

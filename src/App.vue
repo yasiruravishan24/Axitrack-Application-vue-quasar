@@ -1,13 +1,16 @@
+<script setup>
+import { onMounted } from "vue";
+
+import { useUserStore } from "app/src/stores/useUserStore";
+
+const user = useUserStore();
+
+onMounted(() => {
+  user.setUser();
+});
+</script>
 <template>
   <router-view />
 </template>
-
-<script>
-import { defineComponent } from "vue";
-
-export default defineComponent({
-  name: "App",
-});
-</script>
 
 <style></style>
