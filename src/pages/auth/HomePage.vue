@@ -30,22 +30,22 @@ const counters = ref([
     key: "vehicles",
     icon: "directions_car",
     label: "Vehicles",
-    link: "/",
+    link: "/vehicles",
     btn_lable: "Add",
   },
   {
     key: "contacts",
     icon: "contacts",
     label: "Contacts",
-    link: "/",
+    link: "/contacts",
     btn_lable: "Add",
   },
   {
-    key: "history",
+    key: "notifications",
     icon: "timeline",
     label: "Detection",
-    link: "/",
-    btn_lable: "Go to History",
+    link: "/notifications",
+    btn_lable: "See Details",
   },
 ]);
 </script>
