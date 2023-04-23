@@ -153,8 +153,6 @@ const removeVehicle = (id, vehicle) => {
       .then((res) => {
         $q.loadingBar.stop();
 
-        console.log(user.$state.user["vehicles"].length);
-
         $q.notify({
           message: "Vehicle remove successfully",
           color: "positive",
