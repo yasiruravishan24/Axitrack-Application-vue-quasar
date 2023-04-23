@@ -1,7 +1,7 @@
 import { defineStore } from 'pinia'
 import { auth, db } from "../configs/firebase/index"
 import { fetchSignInMethodsForEmail, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, setPersistence, browserLocalPersistence } from "firebase/auth"
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import { doc, setDoc, getDoc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
 
 export const useUserStore = defineStore({
   id: 'user',
@@ -60,6 +60,54 @@ export const useUserStore = defineStore({
       }).catch((error) => {
         return false
       });
+    },
+    async addNewVehicle(data) {
+
+      return await updateDoc(doc(db, "users", auth.currentUser.uid), {
+        vehicles: arrayUnion({
+          vehicle_no: data['vehicle_no'],
+          device_mac: data['device_mac'],
+          device_model: data['device_model'],
+        })
+      }).then(() => {
+
+        if (this.user['vehicles'] == undefined) {
+          this.user['vehicles'] = [
+            {
+              vehicle_no: data['vehicle_no'],
+              device_mac: data['device_mac'],
+              device_model: data['device_model'],
+            }
+          ];
+
+          return;
+        }
+
+        this.user['vehicles'].push({
+          vehicle_no: data['vehicle_no'],
+          device_mac: data['device_mac'],
+          device_model: data['device_model'],
+        });
+
+
+      }).catch((error) => {
+        throw error
+      });
+
+
+    },
+    async removeVehicle(id) {
+
+      const newVehicle = this.user['vehicles'].filter((element, index) => index !== id);
+
+      return await updateDoc(doc(db, "users", auth.currentUser.uid), {
+        vehicles: [...newVehicle]
+      }).then((res) => {
+        this.user['vehicles'] = newVehicle;
+      }).catch((error) => {
+        throw error
+      });
+
     }
   },
 });

@@ -24,12 +24,12 @@ const toggleLeftDrawer = () => {
 };
 
 const links = ref([
-  { icon: "home", text: "Home" },
-  { icon: "directions_car", text: "Vehicles" },
-  { icon: "contacts", text: "Contacts" },
-  { icon: "notifications", text: "Notifications" },
-  { icon: "history", text: "History" },
-  { icon: "settings", text: "Settings" },
+  { icon: "home", text: "Home", to: "home" },
+  { icon: "directions_car", text: "Vehicles", to: "vehicles" },
+  { icon: "contacts", text: "Contacts", to: "contacts" },
+  { icon: "notifications", text: "Notifications", to: "notifications" },
+  { icon: "history", text: "History", to: "history" },
+  { icon: "settings", text: "Settings", to: "settings" },
 ]);
 
 const AccountLinks = ref([]);
@@ -126,7 +126,14 @@ const logout = async () => {
           </q-toolbar-title>
         </q-toolbar>
         <q-list>
-          <q-item v-for="(link, i) in links" :key="i" v-ripple clickable>
+          <q-item
+            v-for="(link, i) in links"
+            :key="i"
+            v-ripple
+            clickable
+            exact
+            :to="{ name: link.to }"
+          >
             <q-item-section avatar>
               <q-icon color="grey" :name="link.icon" />
             </q-item-section>
