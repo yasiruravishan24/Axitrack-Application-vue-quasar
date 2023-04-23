@@ -34,7 +34,7 @@ const counters = ref([
     btn_lable: "Add",
   },
   {
-    key: "contects",
+    key: "contacts",
     icon: "contacts",
     label: "Contacts",
     link: "/",

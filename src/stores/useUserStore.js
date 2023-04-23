@@ -108,6 +108,55 @@ export const useUserStore = defineStore({
         throw error
       });
 
+    },
+    async addNewContact(data) {
+
+      console.log(data)
+      return await updateDoc(doc(db, "users", auth.currentUser.uid), {
+        contacts: arrayUnion({
+          contact_name: data['contact_name'],
+          contact_no: data['contact_no'],
+          relationship: data['relationship'],
+        })
+      }).then(() => {
+
+        if (this.user['contacts'] == undefined) {
+          this.user['contacts'] = [
+            {
+              contact_name: data['contact_name'],
+              contact_no: data['contact_no'],
+              relationship: data['relationship'],
+            }
+          ];
+
+          return;
+        }
+
+        this.user['contacts'].push({
+          contact_name: data['contact_name'],
+          contact_no: data['contact_no'],
+          relationship: data['relationship'],
+        });
+
+
+      }).catch((error) => {
+        throw error
+      });
+
+
+    },
+    async removeContact(id) {
+
+      const newContacts = this.user['contacts'].filter((element, index) => index !== id);
+
+      return await updateDoc(doc(db, "users", auth.currentUser.uid), {
+        contacts: [...newContacts]
+      }).then((res) => {
+        this.user['contacts'] = newContacts;
+      }).catch((error) => {
+        throw error
+      });
+
     }
   },
 });
