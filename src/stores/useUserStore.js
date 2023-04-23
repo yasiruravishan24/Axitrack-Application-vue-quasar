@@ -175,6 +175,24 @@ export const useUserStore = defineStore({
         throw error
       });
 
+    },
+    async updateProfile(data) {
+
+      return await updateDoc(doc(db, "users", auth.currentUser.uid), {
+        full_name: data['full_name'],
+        address: data['address'],
+        contact_no: data['contact_no'],
+        nic: data['nic'],
+      }).then((res) => {
+
+        this.user['full_name'] = data['full_name']
+        this.user['address'] = data['address']
+        this.user['contact_no'] = data['contact_no']
+        this.user['nic'] = data['nic']
+
+      }).catch((error) => {
+        throw error
+      })
     }
   },
 });

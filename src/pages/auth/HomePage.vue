@@ -1,10 +1,19 @@
 <script setup>
 import { ref } from "vue";
+import { useQuasar } from "quasar";
+
 import AppButton from "../../components/AppButton.vue";
+import AppInput from "../../components/AppInput.vue";
 
 import { useUserStore } from "../../stores/useUserStore";
 
+const $q = useQuasar();
+
 const user = useUserStore();
+
+const prompt = ref(false);
+
+const btn_loading = ref(false);
 
 const profileDetails = ref([
   {
@@ -18,10 +27,6 @@ const profileDetails = ref([
   {
     key: "nic",
     label: "NIC",
-  },
-  {
-    key: "job",
-    label: "Job",
   },
 ]);
 
@@ -48,6 +53,160 @@ const counters = ref([
     btn_lable: "See Details",
   },
 ]);
+
+const inputs = ref([
+  {
+    label: "Full Name",
+    name: "full_name",
+    type: "text",
+    autocomplete: "off",
+    value: "",
+    rules: [(val) => (val && val.length > 0) || "Please enter full name"],
+    loading: false,
+    autofocus: false,
+    lazyRules: false,
+    reactiveRules: false,
+    error: false,
+    errorMessage: null,
+    clearable: true,
+    icon: false,
+    iconSlot: "prepend",
+    iconType: null,
+    iconName: null,
+    iconColor: null,
+  },
+  {
+    label: "Address",
+    name: "address",
+    type: "text",
+    autocomplete: "off",
+    value: "",
+    rules: [],
+    loading: false,
+    autofocus: false,
+    lazyRules: false,
+    reactiveRules: false,
+    error: false,
+    errorMessage: null,
+    clearable: true,
+    icon: false,
+    iconSlot: "prepend",
+    iconType: null,
+    iconName: null,
+    iconColor: null,
+  },
+  {
+    label: "Contact No",
+    name: "contact_no",
+    type: "text",
+    autocomplete: "off",
+    value: "",
+    rules: [],
+    loading: false,
+    autofocus: false,
+    lazyRules: false,
+    reactiveRules: false,
+    error: false,
+    errorMessage: null,
+    clearable: true,
+    icon: false,
+    iconSlot: "prepend",
+    iconType: null,
+    iconName: null,
+    iconColor: null,
+  },
+  {
+    label: "NIC",
+    name: "nic",
+    type: "text",
+    autocomplete: "off",
+    value: "",
+    rules: [],
+    loading: false,
+    autofocus: false,
+    lazyRules: false,
+    reactiveRules: false,
+    error: false,
+    errorMessage: null,
+    clearable: true,
+    icon: false,
+    iconSlot: "prepend",
+    iconType: null,
+    iconName: null,
+    iconColor: null,
+  },
+]);
+
+const togglePrompt = () => {
+  prompt.value = !prompt.value;
+
+  inputs.value = inputs.value.map((element, i) => {
+    if (user.$state.user[element.name] != undefined) {
+      element.value = user.$state.user[element.name];
+    }
+
+    return element;
+  });
+};
+
+const submitForm = async () => {
+  var full_name = inputs.value[0].value;
+  var address = inputs.value[1].value;
+  var contact_no = inputs.value[2].value;
+  var nic = inputs.value[3].value;
+
+  if (full_name.length < 1) {
+    inputs.value[0].error = true;
+    inputs.value[0].errorMessage = "Please enter full name";
+
+    return;
+  } else {
+    inputs.value[0].error = false;
+    inputs.value[0].errorMessage = null;
+  }
+
+  btn_loading.value = true;
+  $q.loadingBar.start();
+
+  const data = {
+    full_name: full_name,
+    address: address,
+    contact_no: contact_no,
+    nic: nic,
+  };
+
+
+  await user
+    .updateProfile(data)
+    .then((res) => {
+      btn_loading.value = false;
+      $q.loadingBar.stop();
+
+      togglePrompt();
+
+      inputs.value[0].value = "";
+      inputs.value[1].value = "";
+      inputs.value[2].value = "";
+      inputs.value[3].value = "";
+
+      $q.notify({
+        message: "Profile update successfully",
+        color: "positive",
+        position: "top",
+      });
+    })
+    .catch((error) => {
+      btn_loading.value = false;
+      $q.loadingBar.stop();
+
+      $q.notify({
+        message: error.message,
+        color: "negative",
+        position: "top",
+      });
+    });
+};
+
 </script>
 <template>
   <q-page class="q-pa-md">
@@ -93,7 +252,7 @@ const counters = ref([
           <q-separator />
 
           <q-card-actions>
-            <q-btn flat color="primary">Edit</q-btn>
+            <q-btn flat color="primary" @click="togglePrompt">Edit</q-btn>
           </q-card-actions>
         </q-card>
       </div>
@@ -128,6 +287,46 @@ const counters = ref([
         </q-card>
       </div>
     </div>
+
+    <q-dialog v-model="prompt">
+      <q-card style="width: 700px; max-width: 80vw" class="q-pa-md">
+        <q-form class="q-gutter-md">
+          <AppInput
+            v-for="(input, i) in inputs"
+            :key="i"
+            :label="input.label"
+            :name="input.name"
+            :lazyRules="input.lazyRules"
+            :reactiveRules="input.reactiveRules"
+            :rules="input.rules"
+            :type="input.type"
+            :autocomplete="input.autocomplete"
+            :loading="input.loading"
+            :autofocus="input.autofocus"
+            :error="input.error"
+            :errorMessage="input.errorMessage"
+            :clearable="input.clearable"
+            :icon="input.icon"
+            :iconSlot="input.iconSlot"
+            :iconType="input.iconType"
+            :iconName="input.iconName"
+            :iconColor="input.iconColor"
+            v-model:modelValue="input.value"
+            @handleIcon="iconClick(i, input.name, input.type)"
+          ></AppInput>
+          <div class="column q-pt-sm">
+            <AppButton
+              type="button"
+              label="Update Profile"
+              color="dark"
+              size="20px"
+              :loading="btn_loading"
+              @handleClick="submitForm"
+            />
+          </div>
+        </q-form>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
