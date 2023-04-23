@@ -25,11 +25,11 @@ const toggleLeftDrawer = () => {
 
 const links = ref([
   { icon: "home", text: "Home" },
-  { icon: "whatshot", text: "Trending" },
-  { icon: "subscriptions", text: "Subscriptions" },
+  { icon: "directions_car", text: "Vehicles" },
+  { icon: "contacts", text: "Contacts" },
+  { icon: "notifications", text: "Notifications" },
+  { icon: "history", text: "History" },
   { icon: "settings", text: "Settings" },
-  { icon: "help", text: "Help" },
-  { icon: "feedback", text: "Send feedback" },
 ]);
 
 const AccountLinks = ref([]);
