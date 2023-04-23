@@ -157,6 +157,24 @@ export const useUserStore = defineStore({
         throw error
       });
 
+    },
+    async updateSeen(id) {
+
+      const newNotifications = this.user['notifications'].map((element, index) => {
+        if (index == id) {
+          element.seen = !element.seen
+        }
+        return element
+      });
+
+      return await updateDoc(doc(db, "users", auth.currentUser.uid), {
+        notifications: [...newNotifications]
+      }).then((res) => {
+        this.user['notifications'] = newNotifications;
+      }).catch((error) => {
+        throw error
+      });
+
     }
   },
 });

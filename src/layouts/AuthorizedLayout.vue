@@ -28,7 +28,6 @@ const links = ref([
   { icon: "directions_car", text: "Vehicles", to: "vehicles" },
   { icon: "contacts", text: "Contacts", to: "contacts" },
   { icon: "notifications", text: "Notifications", to: "notifications" },
-  { icon: "history", text: "History", to: "history" },
   { icon: "settings", text: "Settings", to: "settings" },
 ]);
 
@@ -52,6 +51,18 @@ const logout = async () => {
         position: "top",
       });
     });
+};
+
+const getUnseenNotification = () => {
+  if (user.$state.user["notifications"] == undefined) {
+    return 0;
+  }
+
+  const unseen = user.$state.user["notifications"].filter(
+    (element, index) => element.seen === false
+  );
+
+  return unseen.length;
 };
 </script>
 
@@ -78,8 +89,21 @@ const logout = async () => {
         <q-space />
 
         <div class="q-gutter-sm row items-center no-wrap">
-          <q-btn round dense flat color="grey-8" icon="notifications">
-            <q-badge color="red" text-color="white" floating> 2 </q-badge>
+          <q-btn
+            round
+            dense
+            flat
+            color="grey-8"
+            icon="notifications"
+            to="/notifications"
+          >
+            <q-badge
+              v-if="getUnseenNotification() > 0"
+              color="red"
+              text-color="white"
+              floating
+              >{{ getUnseenNotification() }}</q-badge
+            >
           </q-btn>
           <q-btn round flat>
             <q-avatar size="26px">
@@ -145,6 +169,12 @@ const logout = async () => {
             </q-item-section>
             <q-item-section>
               <q-item-label>{{ link.text }}</q-item-label>
+            </q-item-section>
+            <q-item-section
+              v-if="link.to == 'notifications' && getUnseenNotification() > 0"
+              class="flex flex-center"
+            >
+              <q-badge width="5px" rounded color="red" />
             </q-item-section>
           </q-item>
         </q-list>

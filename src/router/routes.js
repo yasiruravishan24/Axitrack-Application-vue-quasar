@@ -21,6 +21,11 @@ const routes = [
         path: '/contacts',
         name: 'contacts',
         component: () => import('src/pages/auth/ContactsPage.vue')
+      },
+      {
+        path: '/notifications',
+        name: 'notifications',
+        component: () => import('src/pages/auth/NotificationsPage.vue')
       }
     ]
   },
