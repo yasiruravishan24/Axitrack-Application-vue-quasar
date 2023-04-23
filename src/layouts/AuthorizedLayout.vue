@@ -83,7 +83,13 @@ const logout = async () => {
           </q-btn>
           <q-btn round flat>
             <q-avatar size="26px">
-              <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
+              <img
+                :src="
+                  user.$state.user['profile_image'] != undefined
+                    ? user.$state.user['profile_image']
+                    : '/src/assets/placeholder.jpg'
+                "
+              />
             </q-avatar>
             <q-menu>
               <q-list style="min-width: 100px">

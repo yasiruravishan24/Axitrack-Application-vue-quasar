@@ -80,7 +80,12 @@ const counters = ref([
               <q-img
                 class="rounded-borders"
                 width="200px"
-                src="https://cdn.quasar.dev/img/boy-avatar.png"
+                placeholder.jpg
+                :src="
+                  user.$state.user['profile_image'] != undefined
+                    ? user.$state.user['profile_image']
+                    : '/src/assets/placeholder.jpg'
+                "
               />
             </q-card-section>
           </q-card-section>
@@ -108,7 +113,7 @@ const counters = ref([
             <div class="text-h2 text-bold">
               {{
                 user.$state.user[counter.key]
-                  ? user.$state.user[counter.key].lenght
+                  ? user.$state.user[counter.key].length
                   : "0"
               }}
               +
