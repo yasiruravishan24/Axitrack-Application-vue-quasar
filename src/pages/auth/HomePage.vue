@@ -15,6 +15,8 @@ const prompt = ref(false);
 
 const btn_loading = ref(false);
 
+const profile_image = ref(null);
+
 const profileDetails = ref([
   {
     key: "address",
@@ -173,8 +175,8 @@ const submitForm = async () => {
     address: address,
     contact_no: contact_no,
     nic: nic,
+    profile_image:profile_image.value
   };
-
 
   await user
     .updateProfile(data)
@@ -206,7 +208,6 @@ const submitForm = async () => {
       });
     });
 };
-
 </script>
 <template>
   <q-page class="q-pa-md">
@@ -314,6 +315,16 @@ const submitForm = async () => {
             v-model:modelValue="input.value"
             @handleIcon="iconClick(i, input.name, input.type)"
           ></AppInput>
+          <q-file
+            rounded
+            outlined
+            color="blue-grey-2"
+            label-color="dark"
+            clearable
+            v-model="profile_image"
+            accept=".jpg, .png"
+            label="Select profile image"
+          />
           <div class="column q-pt-sm">
             <AppButton
               type="button"

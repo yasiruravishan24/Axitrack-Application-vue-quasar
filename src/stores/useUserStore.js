@@ -1,7 +1,8 @@
 import { defineStore } from 'pinia'
 import { auth, db } from "../configs/firebase/index"
 import { fetchSignInMethodsForEmail, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, setPersistence, browserLocalPersistence } from "firebase/auth"
-import { doc, setDoc, getDoc, updateDoc, arrayUnion, arrayRemove } from "firebase/firestore";
+import { doc, setDoc, getDoc, updateDoc, arrayUnion } from "firebase/firestore";
+import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 
 export const useUserStore = defineStore({
   id: 'user',
@@ -50,6 +51,7 @@ export const useUserStore = defineStore({
       auth.onAuthStateChanged(async (user) => {
         if (user) {
           this.user = (await getDoc(doc(db, "users", user.uid))).data();
+          this.user['profile_image'] = await this.getProfileImage(user.uid);
         }
       })
     },
@@ -183,7 +185,11 @@ export const useUserStore = defineStore({
         address: data['address'],
         contact_no: data['contact_no'],
         nic: data['nic'],
-      }).then((res) => {
+      }).then(async (res) => {
+
+        await uploadBytes(ref(getStorage(), auth.currentUser.uid), data['profile_image']).then(async (res) => {
+          this.user['profile_image'] = await this.getProfileImage(auth.currentUser.uid);
+        });
 
         this.user['full_name'] = data['full_name']
         this.user['address'] = data['address']
@@ -193,6 +199,13 @@ export const useUserStore = defineStore({
       }).catch((error) => {
         throw error
       })
+    },
+    async getProfileImage(name) {
+      return getDownloadURL(ref(getStorage(), name))
+        .then((url) => {
+          return url
+        })
     }
   },
+
 });
