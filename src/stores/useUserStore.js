@@ -43,7 +43,7 @@ export const useUserStore = defineStore({
     },
     async logout() {
       return await signOut(auth).then(() => {
-        this.user = null;
+        // this.user = null;
       }).catch((error) => {
         throw error
       });
