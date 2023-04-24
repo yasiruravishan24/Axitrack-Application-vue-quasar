@@ -26,6 +26,11 @@ const routes = [
         path: '/notifications',
         name: 'notifications',
         component: () => import('src/pages/auth/NotificationsPage.vue')
+      },
+      {
+        path: '/settings',
+        name: 'settings',
+        component: () => import('src/pages/auth/SettingsPage.vue')
       }
     ]
   },

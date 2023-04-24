@@ -206,6 +206,22 @@ export const useUserStore = defineStore({
         .then((url) => {
           return url
         })
+    },
+    async updateEmergencyContact(data) {
+
+      return await updateDoc(doc(db, "users", auth.currentUser.uid), {
+        police: data['police'],
+        hospital: data['hospital'],
+        ambulance: data['ambulance'],
+      }).then(async (res) => {
+
+        this.user['police'] = data['police']
+        this.user['hospital'] = data['hospital']
+        this.user['ambulance'] = data['ambulance']
+  
+      }).catch((error) => {
+        throw error
+      })
     }
   },
 
