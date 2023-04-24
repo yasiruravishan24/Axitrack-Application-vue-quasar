@@ -22,7 +22,7 @@ const inputs = ref([
     name: "email",
     type: "email",
     autocomplete: "off",
-    value: "test@gmail.com",
+    value: "",
     col: 6,
     rules: [
       (val) => (val && val.length > 0) || "Please enter email",
