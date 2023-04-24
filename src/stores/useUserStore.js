@@ -34,6 +34,7 @@ export const useUserStore = defineStore({
           const { user } = res
 
           this.user = (await getDoc(doc(db, "users", user.uid))).data();
+          this.user['profile_image'] = await this.getProfileImage(user.uid);
 
         })
       }).catch((error) => {
