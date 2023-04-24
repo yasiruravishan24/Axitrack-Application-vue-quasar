@@ -175,7 +175,7 @@ const submitForm = async () => {
     address: address,
     contact_no: contact_no,
     nic: nic,
-    profile_image:profile_image.value
+    profile_image: profile_image.value,
   };
 
   await user

@@ -55,16 +55,17 @@ const routes = [
   },
   {
     path: '/:catchAll(.*)*',
-    component: () => import('layouts/DefaultLayout.vue'),
-    meta: {
-      requiresAuth: false
-    },
-    children: [
-      {
-        path: '',
-        component: () => import('pages/ErrorNotFound.vue')
-      }
-    ]
+    redirect: {name:'home'}
+    // component: () => import('layouts/DefaultLayout.vue'),
+    // meta: {
+    //   requiresAuth: false
+    // },
+    // children: [
+    //   {
+    //     path: '',
+    //     component: () => import('pages/ErrorNotFound.vue')
+    //   }
+    // ]
   }
 ]
 
